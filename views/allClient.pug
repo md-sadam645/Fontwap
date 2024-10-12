@@ -1,0 +1,89 @@
+include profile
+  
+  block loadStyle
+    link(rel="stylesheet" href="stylesheets/clients.css")
+
+  block loadScript
+    script(src="javascripts/clients.js")
+    script(src="javascripts/common.js")
+
+  block content
+    - const skeleton = [0,1,2,3,4];
+    p.medium-font.p-0 Clients
+    div.card.container-fluid.p-3.border-none
+      div.card-body
+        div.row
+          div.col-md-3
+            div.d-flex
+              button.btn.border.me-3.filter-btn
+                i.fa.fa-cog.fa-spin   
+              input.form-control.input.remove-focus.filter.filter-by-name(placeholder="Search by name")
+          div.col-md-6
+          div.col-md-3.text-right
+            button.btn.btn-light.me-4 Export
+            button.btn.btn-primary.add-client-button Add Client
+        table.table.my-4
+          tr
+            th Client
+            th Email
+            th Mobile
+            th Status
+            th Update Date
+            th Actions
+          each data of skeleton
+            tr.d-none.client-skeleton
+              td.border(colspan="6")
+                div.d-flex
+                  div.me-3.d-flex.align-items-center
+                    div.skeleton#client-pic
+                      div.skeleton-loader
+                  div.d-flex.w-100.flex-column
+                    div#client-title.mb-3.skeleton
+                      div.skeleton-loader
+                    div#client-subtitle.skeleton
+                      div.skeleton-loader
+        div.btn-group.float-end
+          button.btn.border#prev(disabled="disabled") Prev
+          div.btn-group#clientPagination
+          button.btn.border#next Next
+    div.modal.fade.animate__animated.animated__slideInDown.animate__faster(id="clientModal" aria-hidden="true")
+      div.modal-dialog.modal-dialog-centered
+        div.modal-content.border-none
+          div.modal-body.px-4.py-4
+            h4.medium-font.mb-4 Client Details
+            form#clientForm
+              div.form-group.mb-4
+                input.input.form-control.remove-focus(type="text" name="name" placeholder="Client name" required="required" value="saurav")
+                
+              div.form-group.mb-4
+                input.input.form-control.remove-focus#addClientEmail(type="email" name="email" placeholder="Email id" required="required" value="ersaurav08@gmail.com")
+                span.email-error.text-danger Invalid email address
+                
+              div.form-group.mb-4
+                input.input.form-control.remove-focus#country(type="text" name="country" placeholder="Country" required="required" value="india")
+              div.mb-4                  
+                div.form-group.d-flex
+                  button.btn.btn-light.me-2#code(type="button") +91
+                  input.input.form-control.remove-focus#clientMbl(type="text" name="mobile" placeholder="Mobile" maxlength="10" minlength="10" required="required" value="9199987267")
+                span.mbl-error.text-danger Mobile Number must be 10 digits
+
+              button.btn.btn-primary.add-client-submit(type="submit") Submit
+              button.btn.btn-danger.btn-design.d-none.add-client-loader(disabled="disabled")
+                span.spinner-grow.spinner-grow-sm.mr-2
+                span Processing
+    div.modal.fade.animate__animated.animated__slideInDown.animate__faster(id="shareModal" aria-hidden="true")
+        div.modal-dialog.modal-dialog-centered
+            div.modal-content
+                div.modal-body.px-4.py-3
+                    h4.medium-font.mb-4 Share Client Details
+                      div.form-group.my-4
+                        input.input.form-control.remove-focus.link(type="text" name="link")
+                      div.form-group.mb-4.d-flex
+                        button.btn.icon-btn-info.me-4.copy-link
+                          i.fa.fa-copy
+                        button.btn.icon-btn-warning.me-4.share-on-email
+                          i.fa.fa-envelope
+                        button.btn.icon-btn-success.me-4.share-on-whatsapp
+                          i.fa-brands.fa-whatsapp
+                
+              

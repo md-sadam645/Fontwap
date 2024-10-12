@@ -1,0 +1,35 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title Homepage
+        include bootstrap 
+        link(rel="stylesheet", href="../stylesheets/profile.css")
+        link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css")
+        block loadStyle
+        block loadScript
+        script(src="../javascripts/profile.js") 
+        script(src="../javascripts/common.js") 
+    body(style="background:#f2f2f2;")
+    - const toolbar = [{label : "Notifications",icon : "fas fa-bell",link : "/notification",design:"icon-btn-dark"},{label : "allClient",icon : "fas fa-user-secret",link : "/allClient",design:"icon-btn-primary"},{label : "Teams",icon : "fas fa-users",link : "/teams",design:"icon-btn-warning"},{label : "Setting",icon : "fas fa-cog",link : "/setting",design:"icon-btn-info"},{label : "Logout",icon : "fa fa-sign-out-alt",link : "/logout",design:"icon-btn-danger"}]
+        div
+            div.sidenav.sidenav-open
+                div.d-flex.flex-column.align-items-center.my-4
+                    button.logo-box.mb-3
+                        i.fa.fa-building(style="font-size:35px;")
+                    h5.company-name.text-white.text-capitalize.p-0.m-0
+                    p.company-email.text-light.p-0.m-0
+                    p.company-mobile.text-light.p-0.m-0
+            div.section.section-close
+                nav.navbar.navbar-expand-md.bg-white.px-3.py-2 
+                    button.btn.sidebarToggle
+                        i.fa-solid.fa-align-left
+                    ul.navbar-nav.ms-auto
+                        each menu of toolbar
+                            li.nav-item
+                                button.btn.toolbar.me-2.p-0(class=menu.design)
+                                    a.nav-link(href=menu.link class=menu.design)
+                                        i(class=menu.icon)
+                div.px-4.py-3
+                    block content 

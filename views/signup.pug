@@ -1,0 +1,33 @@
+
+div.modal.animate__animated.animate__zoomIn#signup-modal
+    div.modal-dialog.modal-lg.modal-dialog-centered
+        div.modal-content
+            //- div.modal-header
+            //-     h5.modal-title Sign Up Form
+            //-     button.btn-close(type="button" data-bs-dismiss="modal" aria-label="Close")
+            
+            div.modal-body.p-5
+                div.row
+                    div.col-md-6.d-flex.justify-content-center.align-items-center
+                        img(src="images/signup.svg", alt="signup.svg" width="100%")
+                    div.col-md-6
+                        h1.mb-4.display-4(style="font-size:35px;") Register Now
+                        form#signup-form
+                            div.form-group.mb-4
+                                input.form-control.company-name(type="text" name="c_name" placeholder="company Name")
+                                span.company-name-error.text-danger
+                            div.form-group.mb-4
+                                input.form-control.company-email(type="email" name="email" placeholder="Email")
+                                span.company-email-error.text-danger
+                            div.form-group.mb-4
+                                input.form-control(type="number" name="mobile" placeholder="Number")
+                            div.form-group.mb-4
+                                input.form-control(type="password" name="password" placeholder="Password")
+                            div.form-group.mb-4
+                                button.btn.btn-primary.signup-btn(type="submit") Sign Up
+                                button.btn.btn-danger.before-send.d-none(disabled)
+                                    span.spinner-grow.spinner-grow-sm
+                                    span Processing
+
+                            p Already have an account ?
+                                a#request-login-modal(href="#") Login 
