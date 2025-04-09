@@ -1,5 +1,9 @@
 const tokenService = require("../services/token.services");
 const dbService = require("../services/database.services");
+const issService = require("../services/iss.services");
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
+const secretKey = process.env.SECRET_KEY;
 
 const create = async (request, response) => {
   const tokenData = tokenService.verifyToken(request);
@@ -47,6 +51,55 @@ const clientCount = async (request, response) => {
       msg: "Permission Denied",
     });
   }
+};
+
+const all = async (request, response) => {
+  const tokenData = tokenService.verifyToken(request);
+  if (tokenData.isVerified) {
+    const query = { companyId: tokenData.data.uid };
+    const dataRes = await dbService.getCompanyByQuery(query, "clients");
+    response.status(200);
+    response.json({ data: dataRes });
+  } else {
+    response.status(401);
+    response.json({
+      msg: "Permission Denied",
+    });
+  }
+};
+
+const invitation = async (request, response) => {
+  const token = request.params;
+
+  try {
+    const tmp = jwt.verify(token, secretKey);
+    if (issService.indexOf(tmp.iss) != -1) {
+      return {
+        isVerified: true,
+        data: tmp.data,
+      };
+    } else {
+      return {
+        isVerified: false,
+      };
+    }
+  } catch (error) {
+    return {
+      isVerified: false,
+    };
+  }
+
+  // if (tokenData.isVerified) {
+  //   const query = { companyId: tokenData.data.uid };
+  //   const dataRes = await dbService.getCompanyByQuery(query, "clients");
+  //   response.status(200);
+  //   response.json({ data: dataRes });
+  // } else {
+  //   response.status(401);
+  //   response.json({
+  //     msg: "Permission Denied",
+  //   });
+  // }
 };
 
 const paginate = async (request, response) => {
@@ -103,4 +156,6 @@ module.exports = {
   paginate: paginate,
   delete: deleteClient,
   update: updateClient,
-};
+  all: all,
+  invitation: invitation,
+}

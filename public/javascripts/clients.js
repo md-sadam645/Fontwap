@@ -136,6 +136,8 @@ async function showClient(from, to) {
 
   const response = await ajax(request);
   if (response.data.length > 0) {
+    sessionStorage.setItem("client-data", JSON.stringify(response.data));
+
     for (let client of response.data) {
       const tr = dynamicTr(client);
       $("table").append(tr);
@@ -227,10 +229,25 @@ function clientAction() {
   //Share Link
   $(document).ready(function () {
     $(".client-share").each(function () {
-      $(this).click(function () {
+      $(this).click(async function () {
         let id = $(this).data("id");
         $("#shareModal").modal("show");
-        $(".link").val(`${window.location}/invitation/${id}`);
+
+        const token = getCookies("authToken");
+        const formData = new FormData();
+        formData.append("data", JSON.stringify({ id: id }));
+        formData.append("token", token);
+
+        const request = {
+          type: "POST",
+          url: "/get-token/172800",
+          data: formData,
+        };
+
+        const res = await ajax(request);
+        const resToken = res.data.token;
+
+        $(".link").val(`${window.location}/invitation/${resToken}`);
         $(".link").on("keydown", function () {
           return false;
         });
@@ -511,4 +528,104 @@ function filterByEmail() {
       }
     });
   });
+}
+
+//Exports to pdf
+$(document).ready(function () {
+  $("#current").click(async function () {
+    const clientData = sessionStorage.getItem("client-data");
+    if (clientData !== null) {
+      const token = getCookies("authToken");
+      const formData = new FormData();
+      formData.append("data", clientData);
+      formData.append("token", token);
+
+      const request = {
+        type: "POST",
+        url: "exports-to-pdf",
+        data: formData,
+      };
+
+      try {
+        const response = await ajax(request);
+        if (response.status === 1) {
+          const fileRequest = {
+            type: "GET",
+            url: "/exports/" + response.filename,
+          };
+
+          const pdfFile = await ajaxDownloader(fileRequest);
+          const fileUrl = URL.createObjectURL(pdfFile);
+          const a = document.createElement("a");
+          a.href = fileUrl;
+          a.download = response.filename;
+          a.click();
+          a.remove();
+
+          deletePdf(response.filename);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      alert("Client Not Found");
+    }
+  });
+});
+
+//Exports to pdf all clients records
+$(document).ready(function () {
+  $("#all").click(async function () {
+    const request = {
+      type: "GET",
+      url: "/allClient/all",
+    };
+
+    try {
+      const response = await ajax(request);
+      console.log(response.data);
+      const token = getCookies("authToken");
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(response.data));
+      formData.append("token", token);
+
+      const dataRequest = {
+        type: "POST",
+        url: "exports-to-pdf",
+        data: formData,
+      };
+      const dataResponse = await ajax(dataRequest);
+      if (dataResponse.status === 1) {
+        const fileRequest = {
+          type: "GET",
+          url: "/exports/" + dataResponse.filename,
+        };
+
+        const pdfFile = await ajaxDownloader(fileRequest);
+        const fileUrl = URL.createObjectURL(pdfFile);
+        const a = document.createElement("a");
+        a.href = fileUrl;
+        a.download = dataResponse.filename;
+        a.click();
+        a.remove();
+
+        deletePdf(dataResponse.filename);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
+});
+
+async function deletePdf(filename) {
+  const token = getCookies("authToken");
+  const request = {
+    type: "DELETE",
+    url: "/exports-to-pdf/delete/" + filename,
+    data: {
+      token: token,
+    },
+  };
+
+  const response = await ajax(request);
 }

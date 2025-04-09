@@ -14,6 +14,14 @@ router.get("/:from/:to", (request, response) => {
   clientController.paginate(request, response);
 });
 
+router.get("/invitation/:token", (request, response) => {
+  clientController.invitation(request, response);
+});
+
+router.get("/all", (request, response) => {
+  clientController.all(request, response);
+});
+
 router.delete("/:id", (request, response) => {
   clientController.delete(request, response);
 });

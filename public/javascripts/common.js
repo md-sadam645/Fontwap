@@ -103,3 +103,15 @@ $(document).ready(function () {
     }
   });
 });
+
+async function ajaxDownloader(req) {
+  return $.ajax({
+    type: req.type,
+    url: req.url,
+    xhr: function () {
+      const xml = new XMLHttpRequest();
+      xml.responseType = "blob";
+      return xml;
+    },
+  }).promise();
+}
